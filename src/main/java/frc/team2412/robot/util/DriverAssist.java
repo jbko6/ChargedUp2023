@@ -66,7 +66,6 @@ public class DriverAssist {
 				new PPSwerveControllerCommand(
 						alignmentTraj,
 						drivebaseSubsystem::getPose,
-						DrivebaseSubsystem.kinematics,
 						ASSIST_TRANSLATION_PID,
 						ASSIST_TRANSLATION_PID,
 						ASSIST_ROTATION_PID,

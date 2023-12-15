@@ -2,8 +2,6 @@ package frc.team2412.robot.subsystems;
 
 import static frc.team2412.robot.sim.SparkMaxSimProfile.SparkMaxConstants.*;
 
-import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -16,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team2412.robot.Hardware;
 import frc.team2412.robot.sim.PhysicsSim;
+import java.util.function.DoubleSupplier;
 
 public class BonkIntakeSubsystem extends SubsystemBase {
 
@@ -57,7 +56,7 @@ public class BonkIntakeSubsystem extends SubsystemBase {
 
 		wristEncoder = wristMotor.getEncoder();
 
-        resetMotors();
+		resetMotors();
 		updateNetworkTables();
 	}
 
@@ -83,7 +82,7 @@ public class BonkIntakeSubsystem extends SubsystemBase {
 		wristMotor.setSoftLimit(SoftLimitDirection.kForward, WRIST_FORWARD_LIMIT);
 		wristMotor.setSoftLimit(SoftLimitDirection.kReverse, WRIST_REVERSE_LIMIT);
 
-        intakeMotor2.follow(intakeMotor1);
+		intakeMotor2.follow(intakeMotor1);
 
 		wristMotor.burnFlash();
 		intakeMotor1.burnFlash();
@@ -131,14 +130,14 @@ public class BonkIntakeSubsystem extends SubsystemBase {
 	}
 
 	public CommandBase adjustWristCommand(DoubleSupplier adjustment) {
-		return this.runOnce(() -> {
-            if (wristGoal + adjustment.getAsDouble() > WRIST_FORWARD_LIMIT)
-                setWristGoal(WRIST_FORWARD_LIMIT);
-            else if (wristGoal + adjustment.getAsDouble() < WRIST_REVERSE_LIMIT)
-                setWristGoal(WRIST_REVERSE_LIMIT);
-            else
-                setWristGoal(wristGoal + adjustment.getAsDouble());
-        });
+		return this.runOnce(
+				() -> {
+					if (wristGoal + adjustment.getAsDouble() > WRIST_FORWARD_LIMIT)
+						setWristGoal(WRIST_FORWARD_LIMIT);
+					else if (wristGoal + adjustment.getAsDouble() < WRIST_REVERSE_LIMIT)
+						setWristGoal(WRIST_REVERSE_LIMIT);
+					else setWristGoal(wristGoal + adjustment.getAsDouble());
+				});
 	}
 
 	public void simInit(PhysicsSim sim) {

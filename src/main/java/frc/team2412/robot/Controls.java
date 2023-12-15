@@ -214,10 +214,14 @@ public class Controls {
 
 	public void bindBonkIntakeControls() {
 		bonkIntakeWristUpTrigger.whileTrue(
-				s.bonkIntakeSubsystem.adjustWristCommand(driveController::getRightTriggerAxis).repeatedly());
+				s.bonkIntakeSubsystem
+						.adjustWristCommand(driveController::getRightTriggerAxis)
+						.repeatedly());
 		// negative bc its going down
 		bonkIntakeWristDownTrigger.whileTrue(
-				s.bonkIntakeSubsystem.adjustWristCommand(() -> -driveController.getLeftTriggerAxis()).repeatedly());
+				s.bonkIntakeSubsystem
+						.adjustWristCommand(() -> -driveController.getLeftTriggerAxis())
+						.repeatedly());
 
 		bonkIntakeInButton.onTrue(s.bonkIntakeSubsystem.intakeInCommand());
 		bonkIntakeOutButton.onTrue(s.bonkIntakeSubsystem.intakeOutCommand());

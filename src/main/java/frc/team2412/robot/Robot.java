@@ -126,7 +126,6 @@ public class Robot extends TimedRobot {
 					subsystems.drivebaseSubsystem
 							::resetPose, // Pose2d consumer, used to reset odometry at the beginning of
 					// auto
-					subsystems.drivebaseSubsystem.getKinematics(), // SwerveDriveKinematics
 					new PIDConstants(
 							5.0, 0.0,
 							0.0), // PID constants to correct for translation error (used to create the X and

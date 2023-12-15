@@ -87,10 +87,10 @@ public class DriveCommand extends CommandBase {
 		drivebaseSubsystem.drive(
 				(cubeSpeedEntry.getBoolean(false) ? cubed_x : x)
 						* driveSpeedEntry.getDouble(1.0)
-						* DrivebaseSubsystem.MAX_DRIVE_SPEED_METERS_PER_SEC, // convert from percent to m/s
+						* DrivebaseSubsystem.MAX_SPEED, // convert from percent to m/s
 				(cubeSpeedEntry.getBoolean(false) ? cubed_y : y)
 						* driveSpeedEntry.getDouble(1.0)
-						* DrivebaseSubsystem.MAX_DRIVE_SPEED_METERS_PER_SEC,
+						* DrivebaseSubsystem.MAX_SPEED,
 				Rotation2d.fromRotations(
 						rot
 								* rotationSpeedModifier
