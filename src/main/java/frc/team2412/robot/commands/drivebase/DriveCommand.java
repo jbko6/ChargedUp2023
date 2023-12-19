@@ -74,7 +74,7 @@ public class DriveCommand extends CommandBase {
 								- (turboRotation.getAsDouble()
 										* (1 - turboRotationEntry.getDouble(TURBO_ROTATION_DEFAULT))));
 
-		double x = deadbandCorrection(-forward.getAsDouble());
+		double x = deadbandCorrection(forward.getAsDouble());
 		double y = deadbandCorrection(strafe.getAsDouble());
 		double rot = deadbandCorrection(-rotation.getAsDouble());
 

@@ -24,7 +24,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 					new Translation2d(-8.5, 8.5),
 					new Translation2d(8.5, -8.5),
 					new Translation2d(-8.5, -8.5));
-	public static final double MAX_SPEED = Units.feetToMeters(4.5);
+	public static final double MAX_SPEED = Units.feetToMeters(20);
 	public static final Rotation2d MAX_ROTATIONS_PER_SEC = Rotation2d.fromRotations(1.0724);
 
 	private final SwerveDrive swerveDrive;
@@ -38,6 +38,9 @@ public class DrivebaseSubsystem extends SubsystemBase {
 		} catch (Exception e) {
 			throw new RuntimeException();
 		}
+
+		swerveDrive.setMotorIdleMode(true);
+		swerveDrive.setModuleStateOptimization(true);
 	}
 
 	public Pose2d getPose() {
