@@ -26,6 +26,9 @@ public class AutonomousTrajectories {
 	private static final Subsystems s = Robot.getInstance().subsystems;
 
 	public static Command getAutoPathByName(String name) {
+
+
+
 		List<PathPlannerTrajectory> pathGroup =
 				PathPlanner.loadPathGroup(name, new PathConstraints(2.0, 2.0));
 		HashMap<String, Command> eventMap = new HashMap<String, Command>();

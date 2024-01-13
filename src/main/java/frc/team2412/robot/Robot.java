@@ -2,6 +2,7 @@ package frc.team2412.robot;
 
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
@@ -176,7 +177,20 @@ public class Robot extends TimedRobot {
 			subsystems.drivebaseSubsystem.setUseVisionMeasurements(false);
 			// TODO: change this to not be hardcoded
 			subsystems.drivebaseSubsystem.resetGyroAngleWithOrientation(Rotation2d.fromDegrees(180));
-			autonomousChooser.getAuto().schedule();
+			// autonomousChooser.getAuto().schedule();
+
+			PathPlannerPath choreoPath = PathPlannerPath.fromChoreoTrajectory("test");
+
+			Command command;
+			
+			command = 
+
+			// command.schedule();
+
+
+
+
+
 			subsystems.drivebaseSubsystem.disableNoMotionCalibration();
 		}
 		if (subsystems.armLedSubsystem != null) {

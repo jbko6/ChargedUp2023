@@ -1,5 +1,7 @@
 package frc.team2412.robot.util.auto;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -107,6 +109,8 @@ public class AutonomousChooser {
 				"BonkFlat2Score", () -> AutonomousTrajectories.getAutoPathByName("BonkFlat2Score"));
 		autonomousModeChooser.addOption(
 				"BonkBump2Score", () -> AutonomousTrajectories.getAutoPathByName("BonkBump2Score"));
+
+		PathPlannerPath.fromChoreoTrajectory("test");
 		// autonomousModeChooser.addOption(
 		// 		"ChargePickupBot", () -> AutonomousTrajectories.getAutoPathByName("ChargePickupBot"));
 		// autonomousModeChooser.addOption(
