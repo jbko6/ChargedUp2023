@@ -4,8 +4,14 @@ import static frc.team2412.robot.commands.arm.SetWristCommand.WristPosition.WRIS
 import static frc.team2412.robot.subsystems.ArmSubsystem.ArmConstants.PositionType.*;
 
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -19,6 +25,8 @@ import frc.team2412.robot.commands.autonomous.AutoBalanceCommand;
 import frc.team2412.robot.commands.intake.IntakeSetFastOutCommand;
 import frc.team2412.robot.commands.intake.IntakeSetInCommand;
 import frc.team2412.robot.commands.intake.IntakeSetOutCommand;
+import frc.team2412.robot.subsystems.DrivebaseSubsystem;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -79,5 +87,11 @@ public class AutonomousTrajectories {
 		}
 		Command fullAuto = Robot.getInstance().getAutoBuilder(eventMap).fullAuto(pathGroup);
 		return fullAuto;
+	}
+	public Command getChoreoAutoPathByName(DrivebaseSubsystem drivebaseSubsystem,String pathName){
+		PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(pathName);
+		return new FollowPathHolonomic(path, drivebaseSubsystem::getPose, drivebaseSubsystem::getChassisSpeeds, drivebaseSubsystem::drive, new HoloniomicPathFollowerConfig(new PIDConstants(5.0, 0.0., 0.0), new PIDConstants(5.0, 0.0, 0.0.), 4.5, 0.4 new ReplanningConfig()), () -> {var aliiance = DriverStation.getAlliance(); if (alliance.isPresent()){return alliance.get() == DriverStation.Alliance.Red;} return false;}, this);
+	
+	// new FollowPathHolonomic(alignmentPath, drivebaseSubsystem::getPose, drivebaseSubsystem::getChassisSpeeds, null, pathFollowerConfig, DriverAssist::isRedAlliance, drivebaseSubsystem);
 	}
 }

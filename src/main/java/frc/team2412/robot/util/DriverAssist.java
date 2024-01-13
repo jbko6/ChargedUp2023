@@ -1,10 +1,18 @@
 package frc.team2412.robot.util;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.GoalEndState;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPoint;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,12 +21,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team2412.robot.subsystems.DrivebaseSubsystem;
 import frc.team2412.robot.subsystems.IntakeSubsystem.IntakeConstants.GamePieceType;
+import static frc.team2412.robot.subsystems.DrivebaseSubsystem.MAX_ROTATIONS_PER_SEC;
 import java.util.List;
 
 public class DriverAssist {
 	private static final PIDController ASSIST_TRANSLATION_PID = new PIDController(10.0, 0, 0);
 	private static final PIDController ASSIST_ROTATION_PID = new PIDController(8.0, 0, 0);
-	private static final PathConstraints ASSIST_CONSTRAINTS = new PathConstraints(4.0, 2.0);
+	private static final PathConstraints ASSIST_CONSTRAINTS = new PathConstraints(4.0, 2.0, MAX_ROTATIONS_PER_SEC.getRadians(), MAX_ROTATIONS_PER_SEC.getRadians()/2);
+
+
+
+	// 4.0 max vel
+	// 2.0 max accel
 
 	// comments are relative to the driver, with numbers increasing from right to left
 	private static final Pose2d[] CUBE_ALIGNMENT_POSES = {
@@ -36,6 +50,10 @@ public class DriverAssist {
 		new Pose2d(new Translation2d(1.80, 5), Rotation2d.fromDegrees(180)), // 6th cone scoring area
 	};
 
+	private static boolean isRedAlliance() {
+		return DriverStation.getAlliance() == Alliance.Red;
+	}
+
 	private static Command alignRobot(
 			DrivebaseSubsystem drivebaseSubsystem, GamePieceType gamePieceType) {
 		Pose2d currentPose = drivebaseSubsystem.getPose();
@@ -46,26 +64,40 @@ public class DriverAssist {
 										? CUBE_ALIGNMENT_POSES
 										: CONE_ALIGNMENT_POSES));
 
-		PathPlannerTrajectory alignmentTraj =
-				PathPlanner.generatePath(
-						ASSIST_CONSTRAINTS,
-						new PathPoint(
-								currentPose.getTranslation(),
-								Rotation2d.fromRadians(
-										Math.atan2(
-												alignmentPose.getY() - currentPose.getY(),
-												alignmentPose.getX() - currentPose.getX())),
-								currentPose.getRotation(),
-								drivebaseSubsystem.getVelocity()),
-						new PathPoint(
-								alignmentPose.getTranslation(),
-								Rotation2d.fromDegrees(180),
-								alignmentPose.getRotation()));
+		// PathPlannerTrajectory alignmentTraj =
+		// 		PathPlanner.generatePath(
+		// 				ASSIST_CONSTRAINTS,
+		// 				new PathPoint(
+		// 						currentPose.getTranslation(),
+		// 						Rotation2d.fromRadians(
+		// 								Math.atan2(	
+		// 										alignmentPose.getY() - currentPose.getY(),
+		// 										alignmentPose.getX() - currentPose.getX())),
+		// 						currentPose.getRotation(),
+		// 						drivebaseSubsystem.getVelocity()),
+		// 				new PathPoint(
+		// 						alignmentPose.getTranslation(),
+		// 						Rotation2d.fromDegrees(180),
+		// 						alignmentPose.getRotation()));
+
+		ChassisSpeeds currentChassisSpeeds = drivebaseSubsystem.getChassisSpeeds();
+		PathPlannerPath  alignmentPath = new PathPlannerPath(List.of(currentPose.getTranslation(), alignmentPose.getTranslation()), ASSIST_CONSTRAINTS, new GoalEndState(0, alignmentPose.getRotation()));
+		// goal end state might be bad :(
+		
+		PathPlannerTrajectory alignmentTraj = new PathPlannerTrajectory(alignmentPath, currentChassisSpeeds, drivebaseSubsystem.getChassisRotation() );
+
+
+		HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(drivebaseSubsystem.MAX_SPEED, drivebaseSubsystem.get);
+
+		Command newFollowAlignmentCommand = new FollowPathHolonomic(alignmentPath, drivebaseSubsystem::getPose, drivebaseSubsystem::getChassisSpeeds, null, pathFollowerConfig, DriverAssist::isRedAlliance, drivebaseSubsystem);
+
+
 
 		Command followAlignmentCommand =
 				new PPSwerveControllerCommand(
 						alignmentTraj,
 						drivebaseSubsystem::getPose,
+						DrivebaseSubsystem.kinematics,
 						ASSIST_TRANSLATION_PID,
 						ASSIST_TRANSLATION_PID,
 						ASSIST_ROTATION_PID,

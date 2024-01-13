@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -115,5 +116,22 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
 	public void simInit(PhysicsSim sim) {
 		// TODO: does this need to do anything?
+	}
+
+	public SwerveModuleState[] getCurrentStates() {
+		return swerveDrive.getStates();
+	}
+
+	public ChassisSpeeds getChassisSpeeds() {
+		return kinematics.toChassisSpeeds(getCurrentStates());
+	}
+
+	public Rotation2d getChassisRotation() {
+		return swerveDrive.getYaw();
+
+		// might need +orienttation?
+	}
+	public double getDrivebaseRadius() {
+		return swerveDrive.rad
 	}
 }
