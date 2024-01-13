@@ -64,7 +64,11 @@ public class Robot extends TimedRobot {
 
 	private static RobotType getTypeFromAddress() {
 		if (PRACTICE_ADDRESS.exists()) return RobotType.DRIVEBASE;
-		else return RobotType.COMPETITION;
+		else {
+			System.out.print(
+					"!!! You should not be using this version of the code on the competition robot! It will not work !!!");
+			return RobotType.COMPETITION;
+		}
 	}
 
 	@Override

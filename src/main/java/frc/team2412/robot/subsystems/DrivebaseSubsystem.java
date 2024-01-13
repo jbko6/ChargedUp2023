@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +23,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 					new Translation2d(-8.5, 8.5),
 					new Translation2d(8.5, -8.5),
 					new Translation2d(-8.5, -8.5));
-	public static final double MAX_SPEED = Units.feetToMeters(20);
+	public static final double MAX_SPEED = 4.1148;
 	public static final Rotation2d MAX_ROTATIONS_PER_SEC = Rotation2d.fromRotations(1.0724);
 
 	private final SwerveDrive swerveDrive;
@@ -41,6 +40,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 
 		swerveDrive.setMotorIdleMode(true);
 		swerveDrive.setModuleStateOptimization(true);
+		swerveDrive.setHeadingCorrection(true);
 	}
 
 	public Pose2d getPose() {
@@ -93,7 +93,7 @@ public class DrivebaseSubsystem extends SubsystemBase {
 	}
 
 	public void resetGyroAngle() {
-		resetGyroAngle(swerveDrive.getYaw());
+		swerveDrive.zeroGyro();
 	}
 
 	public void resetGyroAngleWithOrientation(Rotation2d orientation) {
